@@ -50,6 +50,146 @@ public:
     ~Nguoi() {}
 };
 
+// CLASS Student ke thua nguoi
+class Student : public Nguoi {
+private:
+    string studentID;
+    double GPA;
+    string major;
+
+public:
+    Student() {}
+
+    void Nhap() override {
+        Nguoi::Nhap();
+        cout << "Nhap Student ID: ";
+        getline(cin, studentID);
+
+        cout << "Nhap GPA: ";
+        cin >> GPA;
+        cin.ignore();
+
+        cout << "Nhap chuyen nganh: ";
+        getline(cin, major);
+    }
+
+    void Xuat() const override {
+        Nguoi::Xuat();
+        cout << "Student ID : " << studentID << endl;
+        cout << "GPA        : " << GPA << endl;
+        cout << "Major      : " << major << endl;
+    }
+
+    string getID() const { return studentID; }
+    double getGPA() const { return GPA; }
+};
+class Classroom {
+private:
+    vector<Student> ds;
+
+public:
+    // Them sinh vien
+    void addStudent() {
+        Student s;
+        s.Nhap();
+        ds.push_back(s);
+    }
+
+    // Xuat toan bo
+    void showAll() {
+        for (auto &s : ds) {
+            s.Xuat();
+            cout << "---------------------\n";
+        }
+    }
+
+    //Linear Search theo Name
+    void searchByName(string name) {
+        for (auto &s : ds)
+            if (s.getHoTen() == name) {
+                cout << "==> TIM THAY!\n";
+                s.Xuat();
+                return;
+            }
+        cout << "Khong tim thay!\n";
+    }
+
+    //Linear Search theo ID
+    void searchByID_Linear(string id) {
+        for (auto &s : ds)
+            if (s.getID() == id) {
+                cout << "==> TIM THAY!\n";
+                s.Xuat();
+                return;
+            }
+        cout << "Khong tim thay!\n";
+    }
+
+    // Binary Search theo ID
+    int binarySearchID(string id) {
+        int l = 0, r = ds.size() - 1;
+        while (l <= r) {
+            int mid = (l + r) / 2;
+            if (ds[mid].getID() == id) return mid;
+            if (ds[mid].getID() < id) l = mid + 1;
+            else r = mid - 1;
+        }
+        return -1;
+    }
+    //Bubble Sort – theo GPA
+    void bubbleSort_GPA() {
+        int n = ds.size();
+        for (int i = 0; i < n - 1; i++)
+            for (int j = 0; j < n - i - 1; j++)
+                if (ds[j].getGPA() > ds[j + 1].getGPA())
+                    swap(ds[j], ds[j + 1]);
+    }
+    //Quick Sort – theo Name
+    int partitionQS(int low, int high) {
+        string pivot = ds[high].getHoTen();
+        int i = low - 1;
+
+        for (int j = low; j < high; j++)
+            if (ds[j].getHoTen() < pivot) {
+                i++;
+                swap(ds[i], ds[j]);
+            }
+
+        swap(ds[i + 1], ds[high]);
+        return i + 1;
+    }
+
+    void quickSort_Name(int low, int high) {
+        if (low < high) {
+            int pi = partitionQS(low, high);
+            quickSort_Name(low, pi - 1);
+            quickSort_Name(pi + 1, high);
+        }
+    }
+    //Selection Sort – theo ID
+    void selectionSort_ID() {
+        int n = ds.size();
+        for (int i = 0; i < n - 1; i++) {
+            int minIndex = i;
+            for (int j = i + 1; j < n; j++)
+                if (ds[j].getID() < ds[minIndex].getID())
+                    minIndex = j;
+            swap(ds[i], ds[minIndex]);
+        }
+    }
+    // Delete theo ID
+    void deleteByID(string id) {
+        for (int i = 0; i < ds.size(); i++) {
+            if (ds[i].getID() == id) {
+                ds.erase(ds.begin() + i);
+                cout << "==> Da xoa thanh cong.\n";
+                return;
+            }
+        }
+        cout << "Khong tim thay ID.\n";
+    }
+};
+
 //Thời khóa biểu
 class ThoiKhoaBieu {
 private:
@@ -163,4 +303,5 @@ int main() {
     return 0;
 
 }
+
 
