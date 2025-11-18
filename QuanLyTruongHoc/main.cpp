@@ -99,7 +99,7 @@ public:
         cout << "Luong   : " << luong << endl;
     }
 
-    // Getter & Setter
+   
     string getMaGV() const { return maGV; }
     string getMonDay() const { return monDay; }
     double getLuong() const { return luong; }
@@ -108,9 +108,7 @@ public:
     void setMonDay(string md) { monDay = md; }
     void setLuong(double l) { luong = l; }
 
-    // =============================
-    //     SỬA THÔNG TIN GIÁO VIÊN
-    // =============================
+   
     void SuaThongTin() {
         cout << "\n=== Sua thong tin giao vien ===\n";
 
@@ -154,9 +152,7 @@ public:
         return this->getHoTen() < other.getHoTen();
     }
 
-    // =============================
-    //      HÀM STATIC TÌM KIẾM
-    // =============================
+   
 
     // Tìm theo mã GV
     static GiaoVien* TimTheoMaGV(vector<GiaoVien>& ds, string ma) {
@@ -179,9 +175,6 @@ public:
         if (!found) cout << "Khong tim thay giao vien day mon nay!\n";
     }
 
-    // =============================
-    //      HÀM STATIC SẮP XẾP
-    // =============================
 
     // Sắp xếp theo mã GV
     static void SapXepTheoMa(vector<GiaoVien>& ds) {
@@ -460,6 +453,7 @@ int main() {
     return 0;
 
 }
+
 
 
 
