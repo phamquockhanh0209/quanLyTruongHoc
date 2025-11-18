@@ -1,7 +1,10 @@
 #include <iostream>
 #include <string>
+#include <vector>
+#include <algorithm>
 using namespace std;
 
+// ====================== CLASS NGUOI ======================
 class Nguoi {
 private:
     string hoTen;
@@ -21,9 +24,9 @@ public:
         diaChi = dc;
     }
 
-    void Nhap() {
+    virtual void Nhap() {
         cout << "Nhap ho ten: ";
-        cin.ignore();                 
+        cin.ignore();
         getline(cin, hoTen);
 
         cout << "Nhap ngay sinh (dd/mm/yyyy): ";
@@ -33,7 +36,7 @@ public:
         getline(cin, diaChi);
     }
 
-    void Xuat() const {
+    virtual void Xuat() const {
         cout << "Ho ten   : " << hoTen << endl;
         cout << "Ngay sinh: " << ngaySinh << endl;
         cout << "Dia chi  : " << diaChi << endl;
@@ -47,9 +50,10 @@ public:
     void setNgaySinh(string ns) { ngaySinh = ns; }
     void setDiaChi(string dc) { diaChi = dc; }
 
-    ~Nguoi() {}
+    virtual ~Nguoi() {}
 };
-// gv
+
+// ====================== CLASS GIAO VIEN ======================
 class GiaoVien : public Nguoi {
 private:
     string maGV;
@@ -71,9 +75,8 @@ public:
         luong = l;
     }
 
-    void Nhap() {
-        cout << "\nNhap thong tin giao vien\n";
-
+    void Nhap() override {
+        cout << "\n=== Nhap thong tin giao vien ===\n";
         Nguoi::Nhap();
 
         cout << "Nhap ma giao vien: ";
@@ -87,19 +90,12 @@ public:
         cin.ignore();
     }
 
-    void Xuat() const {
-        cout << "\nThong tin giao vien\n";
+    void Xuat() const override {
+        cout << "\n=== Thong tin giao vien ===\n";
         Nguoi::Xuat();
         cout << "Ma GV   : " << maGV << endl;
         cout << "Mon day : " << monDay << endl;
         cout << "Luong   : " << luong << endl;
-    }
-
-    void XuatNgan() const {
-        cout << maGV << " | "
-             << getHoTen() << " | "
-             << monDay << " | "
-             << luong << endl;
     }
 
     string getMaGV() const { return maGV; }
@@ -110,80 +106,16 @@ public:
     void setMonDay(string md) { monDay = md; }
     void setLuong(double l) { luong = l; }
 
-    void SuaThongTin() {
-        cout << "\nSua thong tin giao vien\n";
-
-        cout << "Sua ho ten (cu: " << getHoTen() << "): ";
-        string tenMoi; getline(cin, tenMoi);
-        if (!tenMoi.empty()) setHoTen(tenMoi);
-
-        cout << "Sua ngay sinh (cu: " << getNgaySinh() << "): ";
-        string nsMoi; getline(cin, nsMoi);
-        if (!nsMoi.empty()) setNgaySinh(nsMoi);
-
-        cout << "Sua dia chi (cu: " << getDiaChi() << "): ";
-        string dcMoi; getline(cin, dcMoi);
-        if (!dcMoi.empty()) setDiaChi(dcMoi);
-
-        cout << "Sua ma GV (cu: " << maGV << "): ";
-        string mgvMoi; getline(cin, mgvMoi);
-        if (!mgvMoi.empty()) maGV = mgvMoi;
-
-        cout << "Sua mon day (cu: " << monDay << "): ";
-        string mdMoi; getline(cin, mdMoi);
-        if (!mdMoi.empty()) monDay = mdMoi;
-
-        cout << "Sua luong (cu: " << luong << "): ";
-        string temp; getline(cin, temp);
-        if (!temp.empty()) luong = stod(temp);
-
-        cout << "\nDa cap nhat thong tin giao vien!\n";
-    }
-
     bool operator < (const GiaoVien& other) const {
         return this->getHoTen() < other.getHoTen();
     }
 
-    GiaoVien* TimTheoMaGV(vector<GiaoVien>& ds, string ma) {
-        for (auto &gv : ds)
-            if (gv.maGV == ma)
-                return &gv;
-        return nullptr;
-    }
-
-    void TimTheoMonDay(vector<GiaoVien>& ds, string mon) {
-        bool found = false;
-        for (auto &gv : ds)
-            if (gv.monDay == mon) {
-                gv.Xuat();
-                found = true;
-            }
-        if (!found)
-            cout << "Khong tim thay giao vien day mon nay!\n";
-    }
-
-    void SapXepTheoMa(vector<GiaoVien>& ds) {
-        sort(ds.begin(), ds.end(),
-            [](const GiaoVien &a, const GiaoVien &b) {
-                return a.maGV < b.maGV;
-            }
-        );
-    }
-
-    void SapXepTheoTen(vector<GiaoVien>& ds) {
+    static void SapXepTheoTen(vector<GiaoVien>& ds) {
         sort(ds.begin(), ds.end());
-    }
-
-    void SapXepTheoLuong(vector<GiaoVien>& ds) {
-        sort(ds.begin(), ds.end(),
-            [](const GiaoVien &a, const GiaoVien &b) {
-                return a.luong < b.luong;
-            }
-        );
     }
 };
 
-// CLASS Student ke thua nguoi
+// ====================== CLASS STUDENT ======================
 class Student : public Nguoi {
 private:
     string studentID;
@@ -216,19 +148,19 @@ public:
     string getID() const { return studentID; }
     double getGPA() const { return GPA; }
 };
+
+// ====================== CLASSROOM + DSA ======================
 class Classroom {
 private:
     vector<Student> ds;
 
 public:
-    // Them sinh vien
     void addStudent() {
         Student s;
         s.Nhap();
         ds.push_back(s);
     }
 
-    // Xuat toan bo
     void showAll() {
         for (auto &s : ds) {
             s.Xuat();
@@ -236,7 +168,6 @@ public:
         }
     }
 
-    //Linear Search theo Name
     void searchByName(string name) {
         for (auto &s : ds)
             if (s.getHoTen() == name) {
@@ -247,7 +178,6 @@ public:
         cout << "Khong tim thay!\n";
     }
 
-    //Linear Search theo ID
     void searchByID_Linear(string id) {
         for (auto &s : ds)
             if (s.getID() == id) {
@@ -258,7 +188,6 @@ public:
         cout << "Khong tim thay!\n";
     }
 
-    // Binary Search theo ID
     int binarySearchID(string id) {
         int l = 0, r = ds.size() - 1;
         while (l <= r) {
@@ -269,7 +198,7 @@ public:
         }
         return -1;
     }
-    //Bubble Sort – theo GPA
+
     void bubbleSort_GPA() {
         int n = ds.size();
         for (int i = 0; i < n - 1; i++)
@@ -277,7 +206,7 @@ public:
                 if (ds[j].getGPA() > ds[j + 1].getGPA())
                     swap(ds[j], ds[j + 1]);
     }
-    //Quick Sort – theo Name
+
     int partitionQS(int low, int high) {
         string pivot = ds[high].getHoTen();
         int i = low - 1;
@@ -299,7 +228,7 @@ public:
             quickSort_Name(pi + 1, high);
         }
     }
-    //Selection Sort – theo ID
+
     void selectionSort_ID() {
         int n = ds.size();
         for (int i = 0; i < n - 1; i++) {
@@ -310,7 +239,7 @@ public:
             swap(ds[i], ds[minIndex]);
         }
     }
-    // Delete theo ID
+
     void deleteByID(string id) {
         for (int i = 0; i < ds.size(); i++) {
             if (ds[i].getID() == id) {
@@ -323,7 +252,7 @@ public:
     }
 };
 
-//Thời khóa biểu
+// ====================== THOI KHOA BIEU ======================
 class ThoiKhoaBieu {
 private:
     string tenBuoi;
@@ -331,50 +260,30 @@ private:
     string gioHoc;
 
 public:
-    ThoiKhoaBieu() {
-        tenBuoi = "";
-        monHoc = "";
-        gioHoc = "";
-    }
+    ThoiKhoaBieu() {}
 
-    ThoiKhoaBieu(string tb, string mh, string gh) {
-        tenBuoi = tb;
-        monHoc = mh;
-        gioHoc = gh;
-    }
-
-    // Nhập
     void Nhap() {
         cin.ignore();
-        cout << "Nhap ten buoi (Sang/Chieu/Toi): ";
+        cout << "Nhap ten buoi: ";
         getline(cin, tenBuoi);
 
         cout << "Nhap mon hoc: ";
         getline(cin, monHoc);
 
-        cout << "Nhap gio hoc (vd: 7h-9h): ";
+        cout << "Nhap gio hoc: ";
         getline(cin, gioHoc);
     }
 
-    // Xuất
     void Xuat() const {
         cout << "Buoi: " << tenBuoi << endl;
         cout << "Mon hoc: " << monHoc << endl;
         cout << "Gio hoc: " << gioHoc << endl;
     }
 
-    // Getter & Setter
     string getTenBuoi() const { return tenBuoi; }
-    string getMonHoc() const { return monHoc; }
-    string getGioHoc() const { return gioHoc; }
-
-    void setTenBuoi(string tb) { tenBuoi = tb; }
-    void setMonHoc(string mh) { monHoc = mh; }
-    void setGioHoc(string gh) { gioHoc = gh; }
 };
 
-
-// 1. Nhập danh sách
+// ====================== TKB FUNCTIONS ======================
 void NhapDS(ThoiKhoaBieu ds[], int &n) {
     cout << "Nhap so buoi hoc: ";
     cin >> n;
@@ -385,7 +294,6 @@ void NhapDS(ThoiKhoaBieu ds[], int &n) {
     }
 }
 
-// 2. Xuất danh sách
 void XuatDS(ThoiKhoaBieu ds[], int n) {
     cout << "\n===== THOI KHOA BIEU =====\n";
     for (int i = 0; i < n; i++) {
@@ -394,50 +302,122 @@ void XuatDS(ThoiKhoaBieu ds[], int n) {
     }
 }
 
-// 3. Tìm kiếm tuyến tính theo tên buổi
 int LinearSearch(ThoiKhoaBieu ds[], int n, string tenBuoi) {
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < n; i++)
         if (ds[i].getTenBuoi() == tenBuoi)
             return i;
-    }
     return -1;
 }
-// 4. Sắp xếp theo tên buổi
-void SortByTenBuoi(ThoiKhoaBieu ds[], int n) {
-    for (int i = 0; i < n - 1; i++) {
-        for (int j = i + 1; j < n; j++) {
-            if (ds[i].getTenBuoi() > ds[j].getTenBuoi()) {
-                ThoiKhoaBieu temp = ds[i];
-                ds[i] = ds[j];
-                ds[j] = temp;
-            }
-        }
-    }
-    cout << "\n=> Da sap xep theo ten buoi!\n";
-}
 
-// 5. Xóa buổi theo tên
-void DeleteByTenBuoi(ThoiKhoaBieu ds[], int &n, string tenBuoi) {
-    int vt = LinearSearch(ds, n, tenBuoi);
-    if (vt == -1) {
-        cout << "\nKhong tim thay buoi de xoa!\n";
-        return;
-    }
-
-    for (int i = vt; i < n - 1; i++)
-        ds[i] = ds[i + 1];
-
-    n--;
-    cout << "\n=> Da xoa thanh cong!\n";
-}
-
+// ========================= MAIN MENU =========================
 int main() {
+    Classroom lop;
+    vector<GiaoVien> dsGV;
+    ThoiKhoaBieu tkb[100];
+    int nTKB = 0;
+
+    int choice;
+
+    do {
+        cout << "\n========== MENU CHINH ==========\n";
+        cout << "1. Quan ly giao vien\n";
+        cout << "2. Quan ly sinh vien\n";
+        cout << "3. Quan ly thoi khoa bieu\n";
+        cout << "0. Thoat\n";
+        cout << "Nhap lua chon: ";
+        cin >> choice;
+
+        if (choice == 1) {
+            int c;
+            do {
+                cout << "\n--- MENU GIAO VIEN ---\n";
+                cout << "1. Them giao vien\n";
+                cout << "2. Xuat danh sach\n";
+                cout << "3. Sap xep theo ten\n";
+                cout << "0. Quay lai\n";
+                cin >> c;
+
+                if (c == 1) {
+                    GiaoVien gv;
+                    gv.Nhap();
+                    dsGV.push_back(gv);
+                }
+                else if (c == 2) {
+                    for (auto &x : dsGV) x.Xuat();
+                }
+                else if (c == 3) {
+                    GiaoVien::SapXepTheoTen(dsGV);
+                    cout << "=> Da sap xep!\n";
+                }
+
+            } while (c != 0);
+        }
+
+        else if (choice == 2) {
+            int c;
+            do {
+                cout << "\n--- MENU SINH VIEN / DSA ---\n";
+                cout << "1. Them sinh vien\n";
+                cout << "2. Xuat danh sach\n";
+                cout << "3. Tim theo ten\n";
+                cout << "4. Tim theo ID (Linear)\n";
+                cout << "5. Sap xep GPA (Bubble)\n";
+                cout << "6. Sap xep theo ten (Quick Sort)\n";
+                cout << "7. Xoa theo ID\n";
+                cout << "0. Quay lai\n";
+                cin >> c;
+
+                if (c == 1) lop.addStudent();
+                else if (c == 2) lop.showAll();
+                else if (c == 3) {
+                    string ten; cin.ignore(); getline(cin, ten);
+                    lop.searchByName(ten);
+                }
+                else if (c == 4) {
+                    string id; cin.ignore(); getline(cin, id);
+                    lop.searchByID_Linear(id);
+                }
+                else if (c == 5) {
+                    lop.bubbleSort_GPA();
+                    cout << "=> Da sap xep\n";
+                }
+                else if (c == 6) {
+                    lop.quickSort_Name(0, 0); // placeholder
+                }
+                else if (c == 7) {
+                    string id; cin.ignore(); getline(cin, id);
+                    lop.deleteByID(id);
+                }
+
+            } while (c != 0);
+        }
+
+        else if (choice == 3) {
+            int c;
+            do {
+                cout << "\n--- MENU TKB ---\n";
+                cout << "1. Nhap TKB\n";
+                cout << "2. Xuat TKB\n";
+                cout << "3. Tim buoi\n";
+                cout << "0. Quay lai\n";
+                cin >> c;
+
+                if (c == 1) NhapDS(tkb, nTKB);
+                else if (c == 2) XuatDS(tkb, nTKB);
+                else if (c == 3) {
+                    cin.ignore();
+                    string buoi;
+                    cout << "Nhap ten buoi: ";
+                    getline(cin, buoi);
+                    int k = LinearSearch(tkb, nTKB, buoi);
+                    if (k != -1) tkb[k].Xuat();
+                    else cout << "Khong tim thay!\n";
+                }
+
+            } while (c != 0);
+        }
+
+    } while (choice != 0);
 
     return 0;
-
 }
-
-
-
-
-
