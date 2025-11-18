@@ -49,6 +49,163 @@ public:
 
     ~Nguoi() {}
 };
+// gv
+class GiaoVien : public Nguoi {
+private:
+    string maGV;
+    string monDay;
+    double luong;
+
+public:
+    // Constructor mặc định
+    GiaoVien() : Nguoi() {
+        maGV = "";
+        monDay = "";
+        luong = 0;
+    }
+
+    // Constructor đầy đủ
+    GiaoVien(string ht, string ns, string dc, string mgv, string md, double l)
+        : Nguoi(ht, ns, dc)
+    {
+        maGV = mgv;
+        monDay = md;
+        luong = l;
+    }
+
+    // Nhập
+    void Nhap() {
+        cout << "\n=== Nhap thong tin giao vien ===\n";
+
+        Nguoi::Nhap();
+
+        cout << "Nhap ma giao vien: ";
+        getline(cin, maGV);
+
+        cout << "Nhap mon day: ";
+        getline(cin, monDay);
+
+        cout << "Nhap luong: ";
+        cin >> luong;
+        cin.ignore();
+    }
+
+    // Xuất
+    void Xuat() const {
+        cout << "\n=== Thong tin giao vien ===\n";
+        Nguoi::Xuat();
+        cout << "Ma GV   : " << maGV << endl;
+        cout << "Mon day : " << monDay << endl;
+        cout << "Luong   : " << luong << endl;
+    }
+
+    // Getter & Setter
+    string getMaGV() const { return maGV; }
+    string getMonDay() const { return monDay; }
+    double getLuong() const { return luong; }
+
+    void setMaGV(string mgv) { maGV = mgv; }
+    void setMonDay(string md) { monDay = md; }
+    void setLuong(double l) { luong = l; }
+
+    // =============================
+    //     SỬA THÔNG TIN GIÁO VIÊN
+    // =============================
+    void SuaThongTin() {
+        cout << "\n=== Sua thong tin giao vien ===\n";
+
+        cout << "Sua ho ten (cu: " << getHoTen() << "): ";
+        string tenMoi; getline(cin, tenMoi);
+        if (tenMoi != "") setHoTen(tenMoi);
+
+        cout << "Sua ngay sinh (cu: " << getNgaySinh() << "): ";
+        string nsMoi; getline(cin, nsMoi);
+        if (nsMoi != "") setNgaySinh(nsMoi);
+
+        cout << "Sua dia chi (cu: " << getDiaChi() << "): ";
+        string dcMoi; getline(cin, dcMoi);
+        if (dcMoi != "") setDiaChi(dcMoi);
+
+        cout << "Sua ma GV (cu: " << maGV << "): ";
+        string mgvMoi; getline(cin, mgvMoi);
+        if (mgvMoi != "") maGV = mgvMoi;
+
+        cout << "Sua mon day (cu: " << monDay << "): ";
+        string mdMoi; getline(cin, mdMoi);
+        if (mdMoi != "") monDay = mdMoi;
+
+        cout << "Sua luong (cu: " << luong << "): ";
+        string temp; getline(cin, temp);
+        if (temp != "") luong = stod(temp);
+
+        cout << "\n=> Da cap nhat thong tin giao vien!\n";
+    }
+
+    // Xuất nhanh 1 dòng
+    void XuatNgan() const {
+        cout << maGV << " | "
+             << getHoTen() << " | "
+             << monDay << " | "
+             << luong << endl;
+    }
+
+    // So sánh theo tên (dùng sort)
+    bool operator < (const GiaoVien& other) const {
+        return this->getHoTen() < other.getHoTen();
+    }
+
+    // =============================
+    //      HÀM STATIC TÌM KIẾM
+    // =============================
+
+    // Tìm theo mã GV
+    static GiaoVien* TimTheoMaGV(vector<GiaoVien>& ds, string ma) {
+        for (auto &gv : ds) {
+            if (gv.maGV == ma)
+                return &gv;
+        }
+        return nullptr;
+    }
+
+    // Tìm theo môn dạy
+    static void TimTheoMonDay(vector<GiaoVien>& ds, string mon) {
+        bool found = false;
+        for (auto &gv : ds) {
+            if (gv.monDay == mon) {
+                gv.Xuat();
+                found = true;
+            }
+        }
+        if (!found) cout << "Khong tim thay giao vien day mon nay!\n";
+    }
+
+    // =============================
+    //      HÀM STATIC SẮP XẾP
+    // =============================
+
+    // Sắp xếp theo mã GV
+    static void SapXepTheoMa(vector<GiaoVien>& ds) {
+        sort(ds.begin(), ds.end(),
+            [](const GiaoVien &a, const GiaoVien &b) {
+                return a.maGV < b.maGV;
+            }
+        );
+    }
+
+    // Sắp xếp theo tên (dùng operator < )
+    static void SapXepTheoTen(vector<GiaoVien>& ds) {
+        sort(ds.begin(), ds.end());
+    }
+
+    // Sắp xếp theo lương
+    static void SapXepTheoLuong(vector<GiaoVien>& ds) {
+        sort(ds.begin(), ds.end(),
+            [](const GiaoVien &a, const GiaoVien &b) {
+                return a.luong < b.luong;
+            }
+        );
+    }
+};
 
 // CLASS Student ke thua nguoi
 class Student : public Nguoi {
@@ -303,5 +460,6 @@ int main() {
     return 0;
 
 }
+
 
 
