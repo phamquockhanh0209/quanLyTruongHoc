@@ -50,7 +50,7 @@ public:
     ~Nguoi() {}
 };
 
-//Thoi khoa bieu
+//Thời khóa biểu
 class ThoiKhoaBieu {
 private:
     string tenBuoi;
@@ -64,7 +64,6 @@ public:
         gioHoc = "";
     }
 
-    // Constructor đầy đủ
     ThoiKhoaBieu(string tb, string mh, string gh) {
         tenBuoi = tb;
         monHoc = mh;
@@ -164,3 +163,4 @@ int main() {
     return 0;
 
 }
+
